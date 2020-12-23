@@ -26,9 +26,9 @@ Python Django web frontend for playing recorded radio transmisisons. The audio f
 10. Installation of this particular fork may be troublesome.
 11. This fork assumes you're going to be running TrunkRecorder on a P25 system, no analog.
 12. The wav to mp3 conversion...
-   * Uses the ffmpeg package.
-   * Intentionally converts the wave to a 24kbps mp3 file. (Yes, I am aware that 24kbps is overkill, but going anything less - you can hear the reduction in quality)
-   * The audio spectrum is hard-capped at 8000hz, anything over it is clipped off/brick walled.
+    * Uses the ffmpeg package.
+    * Intentionally converts the wave to a 24kbps mp3 file. (Yes, I am aware that 24kbps is overkill, but going anything less - you can hear the reduction in quality)
+    * The audio spectrum is hard-capped at 8000hz, anything over it is clipped off/brick walled.
 
 ## Build and Install
   Documents are at Read the Docs [http://trunk-player.readthedocs.io/](http://trunk-player.readthedocs.io/)
