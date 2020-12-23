@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
-BASE="/home/myuser"
-LOG="$BASE/trunk_player/logs/add_audio.log"
+BASE="/home/radio/trunk-player"
+LOG="$BASE/logs/add_audio.log"
 
-echo "Argument $1" >> $LOG
-cd $BASE/trunk_player
-. env/bin/activate
-./manage.py add_transmission $1 >> $LOG 2>&1
+echo "load_audio.sh args: $1 - $2" >> $LOG
+cd $BASE/
+. $BASE/env/bin/activate
+./manage.py add_transmission $1 --web_url=$2 >> $LOG 2>&1
 
