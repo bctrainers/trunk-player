@@ -63,8 +63,12 @@ else:
 
 urlpatterns += [
     url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),
+    url(r'^legend/$', views.Generic, {'page_name': 'legend'}, name='legend'),
+    url(r'^legend/fire$', views.Generic, {'page_name': 'legend-fire'}, name='legend-fire'),
+    url(r'^legend/police$', views.Generic, {'page_name': 'legend-police'}, name='legend-police'),
     url(r'^page/(?P<page_name>.*)/$', views.Generic, name='pages'),
-    url(r'^talkgroups/$', views.TalkGroupList.as_view()),
+    url(r'^faq/(?P<page_name>.*)/$', views.Generic, name='pages'),
+    url(r'^(talkgroups|tgs)/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView, name='trans'),
     url(r'^audio_download/(?P<slug>[-\w]+)/$',views.transDownloadView, name='download'), 
 ]
