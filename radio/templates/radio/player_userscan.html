@@ -1,8 +1,10 @@
 {% extends "radio/site_base.html" %}
 {% load radio_extras %}
 {% block head %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
+<!-- link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <style type="text/css">
 #tg-multi{
     width: 600px !important;
@@ -11,7 +13,7 @@
 </style>
 <script type="text/javascript">
 // TalkGroup Data
-url3 = '/api_v1/talkgroups/';
+url3 = '/api_v1/talkgroups/?format=json';
 function load_tg() {
     $.getJSON(url3, function(data) {
       url3 = data.next;
@@ -62,28 +64,6 @@ load_tg();
 			<p>Filter on TalkGroups</p>
 			<p>Build Scan Lists</p>
 			-->
-{% get_setting 'TWITTER_ACTIVE' as twitter_active %}
-{% if twitter_active %}
-<a class="twitter-timeline" data-width="220" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-{% endif %}
-{% settings_amazon_adds as amazon_adds %}
-{% if amazon_adds %}
-<script type="text/javascript">
-amzn_assoc_placement = "adunit0";
-amzn_assoc_enable_interest_ads = "true";
-amzn_assoc_tracking_id = "{% settings_amazon_ad 'AMAZON_AD_TRACKING_ID' %}";
-amzn_assoc_ad_mode = "auto";
-amzn_assoc_ad_type = "smart";
-amzn_assoc_marketplace = "amazon";
-amzn_assoc_region = "US";
-amzn_assoc_linkid = "{% settings_amazon_ad 'AMAZON_AD_LINK_ID' %}";
-amzn_assoc_emphasize_categories = "{% settings_amazon_ad 'AMAZON_AD_EMPHASIZE_CATEGORIES' %}";
-amzn_assoc_fallback_mode = {"type":"search","value":"{% settings_amazon_ad 'AMAZON_AD_FALL_BACK_SEARCH' %}"};
-amzn_assoc_default_category = "All";
-amzn_assoc_rows = "6";
-</script>
-<script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
-{% endif %}
 
 		</div>
 	</div>
@@ -94,17 +74,9 @@ amzn_assoc_rows = "6";
         </div>
         {% else %}
         <div id="anoymous_time_warn" style="display: none" class=" alert alert-danger" role="alert">
-        Your current plan access allows you to listen to radio traffic up to {{ anonymous_time.display }} ago. For more info see the <a href="{% url 'plans' %}">Plans</a> page.
+        Your current plan access allows you to listen to radio traffic up to {{ anonymous_time.display }} ago. You need to make an account and login with it to listen to older audio.
         </div>
         {% endif %}
         <div id="jPlayer"><div id="jquery_jplayer_1"></div></div>
-	<hr>
-	<div class="row">
-		<div class="col-xs-12">
-			<footer>
-				<p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
-			</footer>
-		</div>
-	</div>
 </div>
 {% endblock %}

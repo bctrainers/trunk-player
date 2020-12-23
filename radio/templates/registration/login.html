@@ -4,12 +4,10 @@
 {% include "radio/site_live_nav.html" %}
 {% endblock %}
 {% block main-body %}
-{% load socialaccount %}
 <div class="container">
         <div class="row">
 <div class="col-xs-12">
 {% get_setting 'OPEN_SITE' as open_site %}
-{% get_setting 'ALLOW_GOOGLE_SIGNIN' as allow_google %}
 {% if form.errors %}
 <p></p>
 <div class="alert alert-danger">
@@ -22,9 +20,12 @@ Your username and password didn't match. Please try again. If you have an accoun
     <p>Your account doesn't have access to this page. To proceed,
     please login with an account that has access.</p>
     {% else %}
-    <p>Please login.</p>
+    <p>Login Portal</p>
     {% endif %}
 {% endif %}
+
+Don't have an account on ScanJoCo.us? {% if open_site %}<a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account!</a>{% endif %}
+
 
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
@@ -34,22 +35,22 @@ Your username and password didn't match. Please try again. If you have an accoun
     <td>{{ form.username }}</td>
 </tr>
 <tr>
-    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password.label_tag }}<br /><a href="{% url 'account_reset_password' %}">Forgot password?</a></td>
     <td>{{ form.password }}</td>
 </tr>
 </table>
 
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" /> <big> {% if allow_google %}OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a>{% endif %} OR {% if open_site %}</big> <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a>{% endif %}
+<input type="submit" value="Login" />
+<input type="hidden" name="next" value="{{ next }}" />
 </form>
 {% if open_site %}
-<h2>Help</h2>
+<h2>Need Assistance?</h2>
 <p>If you have any questions or comments you can email us at <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>.</p>
 {% endif %}
 {# Assumes you setup the password_reset view in your URLconf #}
 <!-- <p><a href="{% url 'password_reset' %}">Lost password?</a></p> -->
-{% if open_site %}<p><a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a></p>{% endif %}
-<p><a href="{% url 'account_reset_password' %}">Forgot my password</a></p>
+
+
 </div>
 </div>
 </div>

@@ -15,6 +15,15 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.db.utils import OperationalError
 
+
+from django import forms
+from django.contrib import admin
+from ckeditor.widgets import CKEditorWidget
+from ckeditor.fields import RichTextField
+
+class Heading(models.Model):
+    content = RichTextField()
+
 import radio.choices as choice
 
 from pinax.stripe.models import Plan as pinax_Plan
@@ -35,8 +44,8 @@ class Agency(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(null=True, blank=True)
-    url = models.URLField(max_length=400, null=True, blank=True)
-    google_maps_url = models.URLField(max_length=400, null=True, blank=True)
+    url = models.URLField(max_length=8192, null=True, blank=True)
+    google_maps_url = models.URLField(max_length=8192, null=True, blank=True)
     fire_service = models.ForeignKey(Agency, related_name='fire_service', null=True, blank=True, on_delete=models.CASCADE)
     police_service = models.ForeignKey(Agency, related_name='police_service', null=True, blank=True, on_delete=models.CASCADE)
     ems_service = models.ForeignKey(Agency, related_name='ems_service', null=True, blank=True, on_delete=models.CASCADE)
@@ -82,6 +91,7 @@ class Unit(models.Model):
 
     class Meta:
         unique_together = ('dec_id', 'system',)
+        '''ordering = ["-order"]'''
 
     def __str__(self):
         if(self.description):
@@ -226,7 +236,7 @@ class Transmission(models.Model):
         return '{:02d}:{:02d}'.format(m,s)
 
     def freq_mhz(self):
-        return '{0:07.3f}'.format(self.freq / 1000000)
+        return '{0:11.6f}'.format(self.freq / 1000000)
 
     def tg_name(self):
         """Returns TalkGroup name used for page title
@@ -429,8 +439,8 @@ class Profile(models.Model):
 
 
 class WebHtml(models.Model):
-    name = models.CharField(max_length=30, unique=True)
-    bodytext = models.TextField()
+    name = models.CharField(max_length=60, unique=True)
+    bodytext = RichTextField()
     
     def __str__(self):
         return self.name
@@ -521,7 +531,7 @@ class Incident(models.Model):
 
 class MessagePopUp(models.Model):
     mesg_type = models.CharField(max_length=1, choices=choice.MESG_CHOICES, unique=True)
-    mesg_html = models.TextField()
+    mesg_html = RichTextField()
     active = models.BooleanField(default=True)
 
     def __str__(self):

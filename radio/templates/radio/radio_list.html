@@ -1,0 +1,46 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+        <div id="main-message" style="display: none" class=" alert alert-danger" role="alert">
+        </div>
+	<div class="row">
+
+<table style="width:100%;">
+    <thead>
+        <tr>
+            {% if user.is_staff %}<th>Admin</th>{% endif %}
+            <th>RID</th>
+            <th>Assigned Name</th>
+            <th>Type</th>
+            <th>Notes</th>
+            {% if user.is_staff %}<th>Last Transmission</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for radios in talkgroups %}
+        <tr>
+            {% if user.is_staff %}<td><a href="/admin/radio/unit/{{ radios.id }}/change/"> {{radios.id}} </a></td>{% endif %}
+            <td>{{ radios.dec_id }}</td>
+            <td>{{ radios.description }}</td>
+            <td>{% if radios.type == "D" %}   Dispatch
+				{% elif radios.type == "P" %} Portable
+				{% elif radios.type == "B" %} Basestation
+				{% elif radios.type == "M" %} Mobile
+				{% else %}					  Unknown
+				{% endif %}
+				<!--{{ radios.type }}-->
+			</td>
+            <!--td>{{ radios.description }}</td-->
+            <td>{% if radios.comments %}{{ radios.comments }}{% else %}&nbsp;{% endif %}</td>
+            {% if user.is_staff %}<td>{{ radios.last_transmission }}</td>{% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+	</div>
+</div>
+{% endblock %}

@@ -9,24 +9,34 @@
         </div>
 	<div class="row">
 
-<table>
-<thead>
-<tr><th>ID</th><th>System</th><th>Alpha</th><th>Short</th><th>Description</th><th>Notes</th></tr>
-</thead>
-<tbody>
-{% for tg in talkgroups %}
-   <tr><td>{% if user.is_staff %}<a href="/admin/radio/talkgroup/{{ tg.pk }}/change/">{{ tg.dec_id }}</a>{% else %}{{ tg.dec_id }}{% endif %}</td><td>{{ tg.system }}</td><td><a href="/tg/{{ tg.slug }}/">{{ tg.alpha_tag }}</a></td><td>{{ tg.common_name }}</td><td>{{ tg.description }}</td><td>{% if tg.comments %}{{ tg.comments }}{% else %}&nbsp;{% endif %}</td></tr>
-{% endfor %}
-</tbody>
+<table style="width:100%!important;">
+    <thead>
+        <tr>
+            {% if user.is_staff %}<th>Admin</th>{% endif %}
+            <th>ID</th>
+            <th>Site</th>
+            <th>Mode</th>
+            <th>Talkgroup Name</th>
+            <!--th>Description</th-->
+            <th>Notes</th>
+            {% if user.is_staff %}<th>Last Transmission</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for tg in talkgroups %}
+        <tr>
+            {% if user.is_staff %}<td><a href="/admin/radio/talkgroup/{{ tg.pk }}/change/">Edit</a></td>{% endif %}
+            <td>{{ tg.dec_id }}</td>
+            <td>{{ tg.home_site }}</td>
+            <td>{% if tg.mode == "D" %}Clear{% elif tg.mode == "X" %}Mixed{% elif tg.mode == "A" %}Analog{% else %}Encrypted{% endif %}<!--{{ tg.mode }}--></td>
+            <td><a href="/tg/{{ tg.slug }}/">{{ tg.alpha_tag }}</a></td>
+            <!--td>{{ tg.description }}</td-->
+            <td>{% if tg.comments %}{{ tg.comments }}{% else %}&nbsp;{% endif %}</td>
+            {% if user.is_staff %}<td>{{ tg.last_transmission }}</td>{% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
 </table>
-	</div>
-	<hr>
-	<div class="row">
-		<div class="col-xs-12">
-			<footer>
-				<p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
-			</footer>
-		</div>
 	</div>
 </div>
 {% endblock %}

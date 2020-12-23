@@ -293,8 +293,8 @@ def TalkGroupFilterBase(request, filter_val, template):
         raise Http404
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
-        #query_data = limit_transmission_history(self.request, rc_data)
-        query_data = limit_transmission_history_six_months(self.request, rc_data)
+        query_data = limit_transmission_history(self.request, rc_data)
+        #query_data = limit_transmission_history_six_months(self.request, rc_data) '''Swapping this around ~May 26 2020
         restrict_talkgroups(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
@@ -317,9 +317,9 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units').prefetch_related('talkgroup_info')
-        #rc_data = limit_transmission_history(self.request, rc_data)
-        rc_data = limit_transmission_history_six_months(self.request, rc_data)
-        restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
+        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history_six_months(self.request, rc_data) '''Same as above
+        #restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
         return rc_data
 
 
@@ -339,7 +339,6 @@ class IncViewSet(generics.ListAPIView):
         restricted, rc_data = restrict_talkgroups(self.request, rc_data)
         return rc_data
 
-
 class MessagePopUpViewSet(generics.ListAPIView):
     serializer_class = MessageSerializer
 
@@ -355,6 +354,7 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
         search_tgs = re.split('[\+]', tg_var)
         q = Q()
         for stg in search_tgs:
+            q |= Q(dec_id__iexact=stg)
             q |= Q(common_name__iexact=stg)
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
@@ -374,6 +374,7 @@ class UnitFilterViewSet(generics.ListAPIView):
         q = Q()
         for s_unit in search_unit:
             q |= Q(slug__iexact=s_unit)
+            q |= Q(dec_id__iexact=s_unit)
         units = Unit.objects.filter(q)
         rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
         #rc_data = limit_transmission_history(self.request, rc_data)
@@ -510,12 +511,12 @@ class UnitUpdateView(PermissionRequiredMixin, UpdateView):
             if update_unit_email.value_boolean_or_string() == True:
                 Unit = form.save()
                 send_mail(
-                  'Unit ID Change',
+                  'Unit ID Change {} -> {}'.format(Unit.dec_id, Unit.description),
                   'User {} updated unit ID {} Now {}'.format(self.request.user, Unit.dec_id, Unit.description),
                   settings.SERVER_EMAIL,
                   [ mail for name, mail in settings.ADMINS],
                   fail_silently=False,
-                )
+                )                
         except SiteOption.DoesNotExist:
             pass
         return super().form_valid(form)

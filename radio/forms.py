@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
     ModelSelect2TagWidget, ModelSelect2Widget, Select2MultipleWidget,
@@ -79,7 +80,8 @@ class UnitEditForm(forms.ModelForm):
 
     class Meta:
         model = Unit
-        fields = ['description',]
+        readonly_fields = ('dec_id')
+        fields = ['description','type','dec_id']
 
 
 class UserForm(forms.ModelForm):

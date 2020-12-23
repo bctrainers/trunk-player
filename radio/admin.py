@@ -8,19 +8,19 @@ from .models import *
 
 class TalkGroupAdmin(admin.ModelAdmin):
     search_fields = ['alpha_tag', 'description', 'dec_id']
-    list_display = ('alpha_tag', 'description', 'dec_id', 'system')
+    list_display = ('public', 'alpha_tag', 'dec_id', 'description', 'service_type', 'comments', 'mode', 'system', 'id')
     save_on_top = True
 
 
-class UnitAdmin(admin.ModelAdmin): 
+class UnitAdmin(admin.ModelAdmin):
     search_fields = ['description', 'dec_id' ]
-    list_display = ('description', 'dec_id', 'system' )
+    list_display = ('description', 'dec_id', 'type', 'agency', 'system' )
     save_on_top = True
 
 
 class TranmissionUnitInline(admin.TabularInline):
     model = TranmissionUnit
-    extra = 0 # how many rows to show
+    extra = 4 # how many rows to show
 
 class TransmissionAdmin(admin.ModelAdmin):
     #inlines = (TranmissionUnitInline,)
@@ -140,7 +140,7 @@ class IncidentAdmin(admin.ModelAdmin):
     save_on_top = True
 
 class CityForms(forms.ModelForm):
-    google_maps_url = forms.CharField(max_length=1000)
+    google_maps_url = forms.CharField(max_length=8192)
 
     class Meta:
         model = City
@@ -164,9 +164,10 @@ class MessagePopUpAdmin(admin.ModelAdmin):
     list_display = ('mesg_type', 'mesg_html', 'active')
 
 
+
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
-#admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
+admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
 admin.site.register(TalkGroup, TalkGroupAdmin)
 admin.site.register(TalkGroupAccess, TalkGroupAccessAdmin)
 admin.site.register(ScanList, ScanListAdmin)
