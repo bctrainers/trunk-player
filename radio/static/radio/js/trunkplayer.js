@@ -26,7 +26,7 @@ var url_params = null;
 var pagination_older_url = null;
 var pagination_newer_url = null;
 var muted_tg = {};
-var show_limit_warning = true;
+var show_limit_warning = false;
 
 var base_audio_url = js_config.AUDIO_URL_BASE;
 
@@ -73,13 +73,13 @@ function update_pagination_links() {
         pg_array = pagination_newer_url.split( '?' );
         new_url = window.location.pathname + '?' + pg_array[1];
         home_url = window.location.pathname;
-        pagination_html = '<button onclick="url_change(\'' + home_url + '\')">Current</button>';
-        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Newer</button>';
+        pagination_html = '<button class="plbutton" onclick="url_change(\'' + home_url + '\')">Current</button>';
+        pagination_html += '<button  class="plbutton" onclick="url_change(\'' + new_url + '\')">Newer</button>';
     }
     if(pagination_older_url) {
         pg_array = pagination_older_url.split( '?' );
         new_url = window.location.pathname + '?' + pg_array[1];
-        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Older</button>';
+        pagination_html += '<button  class="plbutton" onclick="url_change(\'' + new_url + '\')">Older</button>';
         $("#anoymous_time_warn").hide();
     } else {
         if(show_limit_warning) {
@@ -136,7 +136,7 @@ function clearpage() {
     if(buildpage_running == 1) {
        return false;
     }
-    $('#main-data-table').html("<p style='text-align: center'><img src='/static/radio/img/loader.gif' />");
+    $('#main-data-table').html("<p style='text-align: center'>Loading... Hold on a moment!");
     $('#pagination').html("");
 }
 
@@ -232,8 +232,8 @@ function buildpage() {
     }
     //updatemessage();
     last_ajax = $.getJSON(api_url, function(data) {
-      //console.log("Checking for new calls")
-      //console.log("Last Call " + last_call + " New last " + data.results[0].pk)
+      //console.log("Checking for new calls for: \n" + curr_tg_list);
+      //console.log("Last Call " + last_call + " New last " + data.results[0].pk);
       $("#anoymous_time_warn").hide();
       $("#no_trans").hide();
       if(data.count > 0) {
@@ -262,33 +262,74 @@ function buildpage() {
           if(currently_playing == data.results[a].pk) {
               button_type = "active-trans"
           }
+
+          tg_emerg="";
+          if(curr_results.emergency) {
+              tg_emerg="emergbtn";
+              console.log("Emergency: " + curr_results.emergency + " on " + curr_id);
+          }
+
           tg_muted="";
           if (muted_tg[data.results[a].talkgroup_info.slug]) {
             tg_muted="mute-mute ";
           }
+          //console.log("Emerg Check: " + curr_results.emergency + ".");
 
-          new_html += '<div id="row-' + curr_id + '" class="row grad">';
+          new_html += '<div id="row-' + curr_id + '" class="row grad ' + tg_emerg + ' ">';
           if(data.results[a].audio_file) {
-              new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '.' + curr_results.audio_file_type + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+              new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '.' + curr_results.audio_file_type + '\', ' + curr_id + '); return false;" class="player-action fas fa-play" aria-hidden="false"></button><span class="talk-group ' + tg_muted + tg_emerg + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           } else {
-              new_html += '<div class="top-data"><button class="old-transmission glyphicon glyphicon-ban-circle" data-toggle="modal" data-target="#old-transmission-modal"></button> <span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+              new_html += '<div class="top-data"><button class="old-transmission glyphicon glyphicon-ban-circle" data-toggle="modal" data-target="#old-transmission-modal"></button> <span class="talk-group ' + tg_muted + tg_emerg + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           }
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           new_unit_list = data.results[a].units.reverse();
           has_units = false;
+          for (unit in data.results[a].units)
+            {
+                has_units = true;
+                if (data.results[a].units[unit].description)
+                {
+                    if (js_config.radio_change_unit)
+                    {
+                        new_html += data.results[a].units[unit].description;
+                        new_html += ' <a href="/unit/' + data.results[a].units[unit].dec_id + '/">[L]</a><a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/">[A]</a><a href="/unitupdate/' + data.results[a].units[unit].pk + '/" data-toggle="modal" data-target="#unitupdatemodal">[T]</a>, ';
+                    }
+                    else
+                    {
+                        new_html += data.results[a].units[unit].description + ', ';
+                    }
+                }
+                else
+                {
+                    if (js_config.radio_change_unit)
+                    {
+                        new_html += data.results[a].units[unit].dec_id;
+                        new_html += ' <a href="/unit/' + data.results[a].units[unit].dec_id + '/">[L]</a><a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/">[A]</a><a href="/unitupdate/' + data.results[a].units[unit].pk + '/" data-toggle="modal" data-target="#unitupdatemodal">[T]</a>, ';
+                    }
+                    else
+                    {
+                        new_html += data.results[a].units[unit].dec_id + ', ';
+                    }
+                }
+            }
+          /* Commenting out for some expr code....
           for (unit in data.results[a].units) {
               has_units = true;
-              if(data.results[a].units[unit].description) {
+              if(data.results[a].units[unit].description) 
+              {
                   new_html += data.results[a].units[unit].description + ', ';
-              } else {
+              } 
+              else 
+              {
                   if(js_config.radio_change_unit) {
                       //new_html += '?<a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/change/">' + data.results[a].units[unit].dec_id + '</a>, ';
-                      new_html += '?<a href="/unitupdate/' + data.results[a].units[unit].pk + '/" data-toggle="modal" data-target="#unitupdatemodal">' + data.results[a].units[unit].dec_id + '</a>, ';
+                      new_html += '<a href="/unitupdate/' + data.results[a].units[unit].pk + '/" data-toggle="modal" data-target="#unitupdatemodal">' + data.results[a].units[unit].dec_id + '</a>, ';
                   } else {
-                      new_html += '?' + data.results[a].units[unit].dec_id + ', ';
+                      new_html += data.results[a].units[unit].dec_id + ', ';
+                      //new_html += '<a href="/unitupdate/' + data.results[a].units[unit].pk + '/" data-toggle="modal" data-target="#unitupdatemodal">' + data.results[a].units[unit].dec_id + '</a>, ';
                   }
               }
-          }
+          }*/
           if(has_units) {
             // Drop last ,
             new_html  = new_html.slice(0, -2);
@@ -298,18 +339,22 @@ function buildpage() {
           new_html += '<span class="tran-menu">';
           new_html += '<div class="btn-group">';
           new_html += '<a class="btn dropdown-toggle tran-menu-a" data-toggle="dropdown" href="#">';
-          new_html += '<i class="fa fa-list-ul" aria-hidden="false" title="Call Menu"></i>';
+          new_html += '<i class="fas fa-list-ul" aria-hidden="false" title="Call Menu"></i>';
           new_html += '</a>';
           new_html += '<ul class="dropdown-menu pull-right">';
-          new_html += '<li><a href="/tg/' + curr_results.talkgroup_info.slug + '/"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> Hold on TalkGroup</a></li>';
-          new_html += '<li><a href="#" onclick="return mute_click(\'' + data.results[a].talkgroup_info.slug + '\');"><i class="fa fa-volume-off fa-fw"></i> Mute TalkGroup</a></li>'; 
+          new_html += '<li><a href="/tg/' + curr_results.talkgroup_info.slug + '/"><i class="fas fa-filter fa-fw" aria-hidden="true"></i> Focus this channel</a></li>';
+          new_html += '<li><a href="#" onclick="return mute_click(\'' + data.results[a].talkgroup_info.slug + '\');"><i class="fas fa-volume-off fa-fw"></i> Mute this channel</a></li>'; 
           //if(js_config.radio_change_unit) {
           //  new_html += '<li><a data-toggle="modal" data-target="#myModalNorm"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
           //}
           if(js_config.download_audio) {
-              new_html += '<li><a href="/audio_download/' + curr_results.slug + '/"><i class="fa fa-download fa-fw" aria-hidden="true"></i> Download audio file</a></li>';
+              new_html += '<li><a href="/audio_download/' + curr_results.slug + '/"><i class="fas fa-download fa-fw" aria-hidden="true"></i> Download audio file</a></li>';
           }
-          new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Details</a></li>';
+          if(js_config.radio_change_unit) {
+              new_html += '<li><a href="/admin/radio/transmission/' + curr_id + '/change/"><i class="fas fa-mask fa-fw" aria-hidden="true"></i> Edit Transmission</a></li>';
+          }
+          
+          new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> More Details</a></li>';
           //new_html += '<li class="divider"></li>';
           //new_html += '<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Flag for delete</a></li>';
           new_html += '</ul>';
@@ -409,7 +454,7 @@ function play_next() {
               //play_clip(audio_file, audio_id){
               mp3 = curr_file_list[r_id];
               if(first_load == 0 && first_play == 0) { // Dont play them all on first load
-                  tmp_title = '>>' + curr_tg_list[r_id] + '<< ' + page_title;
+                  tmp_title = 'Playing: ' + curr_tg_list[r_id] + ' - ' + page_title;
                   document.title = tmp_title;
                   play_clip(mp3, curr_id_list[r_id]);
               }
