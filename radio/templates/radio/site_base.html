@@ -32,23 +32,23 @@
 <script>
 js_config = {{ js_config|safe }}
 </script>
-<script src="https://cdn.scanjoco.us/js/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.scanjoco.us/js/popper.min.js" defer></script>
-<script src="https://cdn.scanjoco.us/js/bootstrap.min.js" defer></script>
-<script src="https://cdn.scanjoco.us/js/jquery.jplayer.js" defer></script>
-<script src="https://cdn.scanjoco.us/fa/js/all.min.js" defer></script>
-<script src="https://cdn.scanjoco.us/radio/js/trunkplayer.js" defer></script>
-<script src="https://cdn.scanjoco.us/radio/js/reconnecting-websocket.min.js" defer></script>
-<script src="https://cdn.scanjoco.us/radio/js/live_calls2.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/js/jquery-3.5.1.min.js"></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/js/popper.min.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/js/bootstrap.min.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/js/jquery.jplayer.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/fa/js/all.min.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/radio/js/trunkplayer.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/radio/js/reconnecting-websocket.min.js" defer></script>
+<script src="{% get_setting 'CDN_URL_BASE' %}/radio/js/live_calls2.js" defer></script>
 {% block pre-head %}{% endblock %}
 
-<link href="https://cdn.scanjoco.us/img/apple-touch-icon.png" rel="apple-touch-icon" />
-<link href="https://cdn.scanjoco.us/img/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
-<link href="https://cdn.scanjoco.us/img/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
-<link href="https://cdn.scanjoco.us/img/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
-<link href="https://cdn.scanjoco.us/img/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
-<link href="https://cdn.scanjoco.us/img/icon-hires.png" rel="icon" sizes="192x192" />
-<link href="https://cdn.scanjoco.us/img/icon-normal.png" rel="icon" sizes="128x128" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/apple-touch-icon.png" rel="apple-touch-icon" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/icon-hires.png" rel="icon" sizes="192x192" />
+<link href="{% get_setting 'CDN_URL_BASE' %}/img/icon-normal.png" rel="icon" sizes="128x128" />
 
 <!-- Moved to CDN
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -57,8 +57,8 @@ js_config = {{ js_config|safe }}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.js"></script> 
 <script src="https://use.fontawesome.com/c792248a2e.js"></script>-->
 
-<link rel="stylesheet" href="https://cdn.scanjoco.us/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdn.scanjoco.us/css/trunkplayer.css"> 
+<link rel="stylesheet" href="{% get_setting 'CDN_URL_BASE' %}/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{% get_setting 'CDN_URL_BASE' %}/css/trunkplayer.css"> 
 {% get_setting 'COLOR_CSS' as color_css %}
 {% if color_css %}
 <link rel="stylesheet" href="/static/radio/css/{{ color_css }}">
