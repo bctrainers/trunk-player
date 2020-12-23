@@ -31,6 +31,7 @@ CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 # Allow TalkGroup access restrictions
 ACCESS_TG_RESTRICT = False
+TALKGROUP_RECENT_LENGTH = 120  #  Minutes of history for TG recent_usage
 
 # Allow Some Editing
 SHOW_PROFILE_LINK = True
