@@ -27,6 +27,7 @@ ADMINS=[('Username1', 'admin@yourdomain.com'), ('Username2', 'someone@sometld.ac
 
 # Set to logical directories...
 AUDIO_URL_BASE = '/audio_files/'
+CDN_URL_BASE = 'https://cdn.somedomain.tld'
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 # Allow TalkGroup access restrictions
